@@ -315,3 +315,8 @@ const quicksort = xs => length(xs)
     quicksort(filter(tail(xs, x => x > head(xs)))),
   ])
   : [];
+
+module.exports = {
+  head,
+  tail,
+};
