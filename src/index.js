@@ -73,7 +73,7 @@ const reverse = ([x, ...xs]) => def(x) ? [...reverse(xs), x] : [];
  * Example
  *  `first([1, 2, 3, 4, 5], 3) // -> [1, 2, 3]`
  ***/
-const first = ([x, ...xs], n = 1) => def(x) && n ? [x, ...first(xs, n -1 )] : [];
+const first = ([x, ...xs], n = 1) => def(x) && n ? [x, ...first(xs, n - 1)] : [];
 
 /***
  * Returns a new array that contains the last `n` items of the given array.
@@ -81,7 +81,7 @@ const first = ([x, ...xs], n = 1) => def(x) && n ? [x, ...first(xs, n -1 )] : []
  * Example
  *  `last([1, 2, 3, 4, 5], 3) // -> [3, 4, 5]`
  ***/
-const last (xs, n = 1) => reverse(first(reverse(xs), n));
+const last = (xs, n = 1) => reverse(first(reverse(xs), n));
 
 /***
  * Returns a new array with a value inserted in a given index.
@@ -89,7 +89,7 @@ const last (xs, n = 1) => reverse(first(reverse(xs), n));
  * Example
  *  `slice([1, 2, 3, 4], 2, 5) // -> [1, 2, 5, 3, 4]`
  ***/
-const slice = ([x, ...xs], i, y, curr = 0) => def(x) 
+const slice = ([x, ...xs], i, y, curr = 0) => def(x)
   ? curr === i
     ? [y, x, ...slice(xs, i, y, curr + 1)]
     : [x, ...slice(xs, i, y, curr + 1)]
@@ -101,7 +101,7 @@ const slice = ([x, ...xs], i, y, curr = 0) => def(x)
  * Example
  *  `isArray([1]) // -> true`
  ***/
-const isArray = x => Array.isArray(x)
+const isArray = x => Array.isArray(x);
 
 /***
  * Combines nested arrays into a single array.
@@ -110,7 +110,7 @@ const isArray = x => Array.isArray(x)
  *  `flatten([[1, 2, 3], [4, [5, [6]]]]) // -> [1, 2, 3, 4, 5, 6]`
  ***/
 const flatten = ([x, ...xs]) => def(x)
-  ? isArray(x) 
+  ? isArray(x)
     ? [...flatten(x), ...flatten(xs)]
     : [x, ...flatten(xs)]
   : [];
@@ -132,8 +132,8 @@ const map = ([x, ...xs], fn) => def(x)
  *  `swap([1, 2, 3, 4], 1, 3) // -> [1, 4, 3, 2]` 
  ***/
 const swap = (a, i, j) => map(a, (x, y) => {
-  if (y === i) return a[j];
-  if (y === j) return a[i];
+  if (y === i) { return a[j]; };
+  if (y === j) { return a[i]; };
   return x;
 });
 
@@ -175,8 +175,8 @@ const partition = (xs, fn) => [filter(xs, fn), reject(xs, fn)];
  * Example
  *  `reduce([1, 2, 3], 0, (acc, x) => acc + x) // -> 6
  ***/
-const reduce([x, ...xs], fn, acc, i = 0) => def(x)
-  ? reduce(xs, fn, fn(acc, x, i), i+1) 
+const reduce = ([x, ...xs], fn, acc, i = 0) => def(x)
+  ? reduce(xs, fn, fn(acc, x, i), i+1)
   : acc;
 
 /***
@@ -185,7 +185,7 @@ const reduce([x, ...xs], fn, acc, i = 0) => def(x)
  * Example
  *  `reduceRight([1, 2, 3], 0, (acc, x) => acc + x) // -> 6
  ***/
-const reduceRight(xs, fn, acc, i = 0) => reduce(reverse(xs), fn, acc, i);
+const reduceRight = (xs, fn, acc, i = 0) => reduce(reverse(xs), fn, acc, i);
 
 /***
  * Partially apply a function by filling in any number of its arguments.
@@ -257,7 +257,7 @@ const pluck = (key, object) => object[key];
   * map(products, getFinalPrice) // -> [9.675, 4.8375, 0.9675]
   * ```
   ***/
-const flow (...args) => x => reduce(args, (acc, fn) => fn(acc), x);
+const flow = (...args) => x => reduce(args, (acc, fn) => fn(acc), x);
 
 /***
  * Each function gets the return value from the next function.
