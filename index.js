@@ -180,9 +180,138 @@ const reduce([x, ...xs], fn, acc, i = 0) => def(x)
   : acc;
 
 /***
- * Applies a function against an accumulator and each elment in the array (from rigth to left) to reduce it to a single value.
+ * Applies a function against an accumulator and each elment in the array (from right to left) to reduce it to a single value.
  *
  * Example
- *  `reduce([1, 2, 3], 0, (acc, x) => acc + x) // -> 6
+ *  `reduceRight([1, 2, 3], 0, (acc, x) => acc + x) // -> 6
  ***/
 const reduceRight(xs, fn, acc, i = 0) => reduce(reverse(xs), fn, acc, i);
+
+/***
+ * Partially apply a function by filling in any number of its arguments.
+ *
+ * Example
+ *  ```
+ *  const add = (x, y) => x + y
+ *  const plus2 = partial(add, 2)
+ *  add2(10) // -> 12
+ *  ```
+ ***/
+const partial = (fn, ...args) => (...newArgs) => fn(...args, ...newArgs);
+
+/***
+ * Convert function that takes an array to one that takes multiple arguments.
+ *
+ * Example
+ * ```
+ * const sum([x, ...xs]) = def(x) ? parseInt(x + add(xs)) : [];
+ * const sum([1, 2, 3]) // -> 6
+ * const spreadSum = spreadArg(add)
+ * const spreadSum(1, 2, 3) // -> 6
+ * ```
+ ***/
+const spreadArg = fn => (...args) => fn(args);
+
+/***
+ * Reverse function argument order.
+ *
+ * Example
+ * ```
+ * const divide = (x, y) => x / y
+ * divide(100, 10) // -> 10
+ * const percentToDec = partial(reverseArgs(divide), 100);
+ * percentToDec(25) // -> 0.25
+ ***/
+const reverseArgs = fn => (...args) => fn(...reverse(args))
+
+ /***
+  * Extract property from array.
+  *
+  * Example
+  * ```
+  * const getPrices = partial(pluck, 'price'); 
+  * const products = [
+  *   {price: 10},
+  *   {price: 5},
+  *   {price: 1},
+  * ];
+  * map(products, getPrices) // -> [10, 5, 1]
+  * ```
+  ***/
+const pluck = (key, object) => object[key];
+
+/***
+ * Each function gets the return value from the previous function.
+ *
+ * Example
+ * ```
+ * const getPrice = partial(pluck, 'price')
+ * const discount = x => x * 0.9
+ * const tax = x => x + (x * 0.075)
+ * const getFinalPrice = flow(getPrice, discount, tax)
+ * const products = [
+  *   {price: 10},
+  *   {price: 5},
+  *   {price: 1},
+  * ];
+  * map(products, getFinalPrice) // -> [9.675, 4.8375, 0.9675]
+  * ```
+  ***/
+const flow (...args) => x => reduce(args, (acc, fn) => fn(acc), x);
+
+/***
+ * Each function gets the return value from the next function.
+ *
+ * Example
+ * ```
+ * const getPrice = partial(pluck, 'price')
+ * const discount = x => x * 0.9
+ * const tax = x => x + (x * 0.075)
+ * const getFinalPrice = flow(tax, discount, getPrice)
+ * const products = [
+  *   {price: 10},
+  *   {price: 5},
+  *   {price: 1},
+  * ];
+  * map(products, getFinalPrice) // -> [9.675, 4.8375, 0.9675]
+  * ```
+  ***/
+const compose = (...args) => flow(...reverse(args));
+
+/***
+ * Returns the smallest number in an array and `Infinity` if the array is empty.
+ *
+ * Example
+ * `min([3, 1, 2]) // -> 1`
+ ***/
+const min = ([x, ...xs], result = Infinity) => def(x)
+  ? x < result
+    ? min(xs, x)
+    : result
+  : result;
+
+/***
+ * Returns the largest number in an array and `-Infinity` if the array is empty.
+ *
+ * Example
+ * `max([3, 1, 2]) // -> 3`
+ ***/
+const max = ([x, ...xs], result = -Infinity) => def(x)
+  ? x > result
+    ? max(xs, x)
+    : result
+  : result;
+
+/***
+ * Sort an array from smallest to largest using *Quicksort* algorithm.
+ *
+ * Example
+ * `quicksort([5, 2, 4, 3, 1]) // -> [1, 2, 3, 4, 5]`
+ ***/
+const quicksort = xs => length(xs)
+  ? flatten([
+    quicksort(filter(tail(xs, x => x <= head(xs)))),
+    head(xs),
+    quicksort(filter(tail(xs, x => x > head(xs)))),
+  ])
+  : [];
