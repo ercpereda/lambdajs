@@ -73,7 +73,7 @@ const reverse = ([x, ...xs]) => def(x) ? [...reverse(xs), x] : [];
  * Example
  *  `first([1, 2, 3, 4, 5], 3) // -> [1, 2, 3]`
  ***/
-const first = ([x, ...xs], n = 1) => def(x) && n ? [x, ...first(xs, n - 1)] : [];
+const first = ([x, ...xs], n = 1) => def(x) && n > 0 ? [x, ...first(xs, n - 1)] : [];
 
 /***
  * Returns a new array that contains the last `n` items of the given array.
@@ -319,4 +319,11 @@ const quicksort = xs => length(xs)
 module.exports = {
   head,
   tail,
+  def,
+  undef,
+  copy,
+  length,
+  reverse,
+  first,
+  last,
 };
